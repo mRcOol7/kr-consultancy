@@ -71,16 +71,16 @@ export default function JobSeeker() {
       // Append file
       formDataToSubmit.append('resume', selectedFile);
       // Append other form data
-      formDataToSubmit.append('fullName', formData.fullName);
+      formDataToSubmit.append('full_name', formData.fullName);
       formDataToSubmit.append('email', formData.email);
       formDataToSubmit.append('mobile', formData.mobile);
       formDataToSubmit.append('location', formData.location);
       formDataToSubmit.append('qualification', formData.qualification);
       formDataToSubmit.append('experience', formData.experience);
-      formDataToSubmit.append('keySkills', formData.keySkills);
+      formDataToSubmit.append('key_skills', formData.keySkills);
       formDataToSubmit.append('designation', formData.designation);
-      formDataToSubmit.append('currentCTC', formData.currentCTC);
-      formDataToSubmit.append('expectedCTC', formData.expectedCTC);
+      formDataToSubmit.append('current_ctc', formData.currentCTC);
+      formDataToSubmit.append('expected_ctc', formData.expectedCTC);
 
       // Submit directly to backend
       const response = await axios.post(

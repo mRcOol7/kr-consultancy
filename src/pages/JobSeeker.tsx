@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload } from 'lucide-react';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://kr-consultancy-backend.vercel.app';
 
 export default function JobSeeker() {
   const [formData, setFormData] = useState({
@@ -114,9 +114,15 @@ export default function JobSeeker() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Form submission error:', error);
-      setError(error.message || 'Failed to submit application');
+      if (error instanceof Error) {
+        setError(error.message);
+      } else if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || error.message || 'Failed to submit application');
+      } else {
+        setError('Failed to submit application');
+      }
       setIsSubmitting(false);
     }
   };

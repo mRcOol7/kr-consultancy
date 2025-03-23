@@ -55,34 +55,55 @@ export default function JobSeeker() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedFile) {
+      setError('Please upload your resume');
+      return;
+    }
+
+    if (!formData.agreeToTerms) {
+      setError('Please agree to the terms and conditions');
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
-
+    
     try {
-      if (!selectedFile) {
-        throw new Error('Please select a resume file');
-      }
-
-      if (!formData.agreeToTerms) {
-        throw new Error('Please agree to the terms and conditions');
-      }
-
+      // Log the form data for debugging
+      console.log('Submitting form data:', formData);
+      
       const formDataToSubmit = new FormData();
-      // Append file
       formDataToSubmit.append('resume', selectedFile);
-      // Append other form data
-      formDataToSubmit.append('full_name', formData.fullName);
-      formDataToSubmit.append('email', formData.email);
-      formDataToSubmit.append('mobile', formData.mobile);
-      formDataToSubmit.append('location', formData.location);
-      formDataToSubmit.append('qualification', formData.qualification);
-      formDataToSubmit.append('experience', formData.experience);
-      formDataToSubmit.append('key_skills', formData.keySkills);
-      formDataToSubmit.append('designation', formData.designation);
-      formDataToSubmit.append('current_ctc', formData.currentCTC);
-      formDataToSubmit.append('expected_ctc', formData.expectedCTC);
+      
+      // Convert frontend field names to backend field names
+      const fieldMappings = {
+        fullName: 'full_name',
+        email: 'email',
+        mobile: 'mobile',
+        location: 'location',
+        qualification: 'qualification',
+        experience: 'experience',
+        keySkills: 'key_skills',
+        designation: 'designation',
+        currentCTC: 'current_ctc',
+        expectedCTC: 'expected_ctc'
+      };
 
-      // Submit directly to backend
+      // Append all form fields with proper validation
+      Object.entries(fieldMappings).forEach(([frontendField, backendField]) => {
+        const value = formData[frontendField as keyof typeof formData];
+        if (!value && frontendField !== 'agreeToTerms') {
+          throw new Error(`${frontendField} is required`);
+        }
+        formDataToSubmit.append(backendField, value.toString());
+      });
+
+      // Log the FormData entries for debugging
+      for (const pair of formDataToSubmit.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      // Submit to backend
       const response = await axios.post(
         `${API_BASE_URL}/api/job-applications`,
         formDataToSubmit,
@@ -96,6 +117,7 @@ export default function JobSeeker() {
       console.log('Application submitted successfully:', response.data);
       setIsSubmitting(false);
       setSuccess(true);
+      
       // Reset form
       setFormData({
         fullName: '',
@@ -119,7 +141,7 @@ export default function JobSeeker() {
       if (error instanceof Error) {
         setError(error.message);
       } else if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || error.message || 'Failed to submit application');
+        setError(error.response?.data?.error || error.message || 'Failed to submit application');
       } else {
         setError('Failed to submit application');
       }

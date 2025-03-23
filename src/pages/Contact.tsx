@@ -97,7 +97,7 @@ export default function Contact() {
                 <div className="bg-blue-700 p-3 rounded-lg mr-4">
                   <Globe className="h-6 w-6" />
                 </div>
-                <p>www.krconsultancy.com</p>
+                <p>https://kr-consultancy.vercel.app/</p>
               </div>
             </div>
           </div>

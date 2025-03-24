@@ -11,9 +11,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-3">
             <img
-              src="/krlogo.jpeg"
+              src="/KR.png"
               alt="KR Placement Services Logo"
-              className="h-10 w-auto"
+              className="h-20 w-auto"
             />
             <span className="text-xl font-bold">KR Consultancy</span>
           </Link>
